@@ -4,25 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoodsManager {
-    private final List<Goods> goodsList = new ArrayList<Goods>();
+    private final List<Goods> goodsList = new ArrayList<>();
 
-    public boolean add(Goods g) {
-        boolean exists = goodsList.stream()
-                .anyMatch(item -> item.getCode().equalsIgnoreCase(g.getCode()));
-
-        if (exists) {
-            IO.println("Error: " + g.getCode() + " already exists");
-            return false;
+    public void add(Goods goods) {
+        if (exists(goods.getCode())) {
+            throw new IllegalArgumentException("Code " + goods.getCode() + " already exists");
         }
-
-        return goodsList.add(g);
+        goodsList.add(goods);
     }
 
-    public void displayAll() {
-        if (goodsList.isEmpty()) {
-            IO.println("Goods list is empty");
-        } else {
-            goodsList.forEach(item -> IO.println(item));
-        }
+    public boolean exists(String code) {
+        return goodsList.stream().anyMatch(item -> item.getCode().equalsIgnoreCase(code));
+    }
+
+    public List<Goods> getAll() {
+        return List.copyOf(goodsList);
     }
 }

@@ -2,20 +2,22 @@ package practice.two;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Objects;
 
-public class Food extends Goods {
-    private LocalDate mfgDate;
-    private LocalDate expDate;
-    private String supplier;
+public final class Food extends Goods {
+    private final LocalDate mfgDate;
+    private final LocalDate expDate;
+    private final String supplier;
     private final Clock clock;
 
     public Food(String code, String name, int inventoryQuantity, double unitPrice, LocalDate mfgDate, LocalDate expDate, String supplier, Clock clock) {
         super(code, name, inventoryQuantity, unitPrice);
-        this.mfgDate = mfgDate;
-        setExpDate(expDate, mfgDate);
-        this.supplier = supplier;
-        this.clock = Objects.requireNonNull(clock);
+        this.mfgDate = requireNonNull(mfgDate, "Mfg date");
+        if (requireNonNull(expDate, "Exp date").isBefore(mfgDate)) {
+            throw new IllegalArgumentException("Exp date must be >= " + mfgDate);
+        }
+        this.expDate = expDate;
+        this.supplier = requireNotBlank(supplier, "Supplier");
+        this.clock = requireNonNull(clock, "Clock");
     }
 
     @Override
@@ -26,22 +28,11 @@ public class Food extends Goods {
     @Override
     public String evaluateConsumption() {
         boolean isExpired = LocalDate.now(clock).isAfter(expDate);
-        if (inventoryQuantity > 0 && isExpired) {
-            return "Hard to sell";
-        }
-        return "Not evaluated";
+        return getInventoryQuantity() > 0 && isExpired ? "Hard to sell" : "Not evaluated";
     }
 
     @Override
     public String toString() {
         return super.toString() + " | Mfg date: %s | Exp date: %s | Supplier: %s".formatted(mfgDate, expDate, supplier);
-    }
-
-    private void setExpDate(LocalDate expDate, LocalDate mfgDate) {
-        if (expDate.isBefore(mfgDate)) {
-            throw new IllegalArgumentException("ExpDate must be >= " + mfgDate);
-        }
-
-        this.expDate = expDate;
     }
 }
