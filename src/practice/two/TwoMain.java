@@ -2,6 +2,7 @@ import practice.two.*;
 
 Scanner sc = new Scanner(System.in);
 DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
+Clock clock = Clock.systemDefaultZone();
 
 String input(String label) {
     IO.println(label + ": ");
@@ -37,11 +38,11 @@ void main() {
 
                 Goods g = switch (type) {
                     case 1 ->
-                            new Food(code, name, inventoryQuantity, unitPrice, inputDate("mfgDate"), inputDate("expDate"), input("Supplier"));
+                            new Food(code, name, inventoryQuantity, unitPrice, inputDate("mfgDate"), inputDate("expDate"), input("Supplier"), clock);
                     case 2 ->
                             new Electrical(code, name, inventoryQuantity, unitPrice, inputInt("Warranty months"), inputDouble("Capacity KW"));
                     case 3 ->
-                            new Crockery(code, name, inventoryQuantity, unitPrice, input("Manufacturer"), inputDate("Date received"));
+                            new Crockery(code, name, inventoryQuantity, unitPrice, input("Manufacturer"), inputDate("Date received"), clock);
                     default -> null;
                 };
 

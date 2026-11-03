@@ -1,5 +1,6 @@
 package practice.three;
 
+import java.time.Clock;
 import java.time.Year;
 import java.util.List;
 
@@ -12,10 +13,10 @@ public abstract class Vehicle {
     private String color;
     private Owner owner;
 
-    public Vehicle(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner) {
+    public Vehicle(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, Clock clock) {
         setPlateNumber(plateNumber);
         setManufacturer(manufacturer);
-        setManufactureYear(manufactureYear);
+        setManufactureYear(manufactureYear, clock);
         this.color = color;
         setOwner(owner);
     }
@@ -40,8 +41,8 @@ public abstract class Vehicle {
                         manufacturer + " must be one of the following values: " + String.join(", ", VALID_MANUFACTURERS)));
     }
 
-    private void setManufactureYear(int manufactureYear) {
-        int currentYear = Year.now().getValue();
+    private void setManufactureYear(int manufactureYear, Clock clock) {
+        int currentYear = Year.now(clock).getValue();
         if (manufactureYear <= 2000 || manufactureYear > currentYear) {
             throw new IllegalArgumentException(manufactureYear + " must be > 2000 and <= " + currentYear);
         }
