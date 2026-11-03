@@ -1,8 +1,10 @@
-import practice.one.*;
+import practice.one.Circle;
+import practice.one.Rectangle;
+import practice.one.Shape;
 
 void main() {
     IO.println("Practice 1: Begin");
-    var shapes = List.of(new Circle(14), new Rectangle(12, 15));
-    shapes.forEach(s -> s.displayInfo());
+    List<Shape> shapes = List.of(new Circle(7), new Rectangle(12, 15));
+    shapes.forEach(IO::println);
     IO.println("Practice 1: End");
 }

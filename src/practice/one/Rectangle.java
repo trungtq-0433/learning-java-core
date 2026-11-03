@@ -1,9 +1,12 @@
 package practice.one;
 
-public class Rectangle extends Shape {
+public final class Rectangle extends Shape {
+    private final double width;
+    private final double height;
 
     public Rectangle(double width, double height) {
-        super(width, height);
+        this.width = requirePositive(width, "Width");
+        this.height = requirePositive(height, "Height");
     }
 
     @Override
@@ -11,15 +14,13 @@ public class Rectangle extends Shape {
         return width * height;
     }
 
+    @Override
     public double getPerimeter() {
         return 2 * (width + height);
     }
 
     @Override
-    public void displayInfo() {
-        super.displayInfo();
-        IO.println("Rectangle with width: " + width + " and height: " + height);
-        IO.println("Perimeter is: " + getPerimeter());
-        IO.println("Area is: " + getArea());
+    protected String describe() {
+        return "Rectangle with width: %.2f and height: %.2f".formatted(width, height);
     }
 }
