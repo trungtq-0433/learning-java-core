@@ -21,6 +21,11 @@ public class Electrical extends Goods {
         return (inventoryQuantity < 3) ? "Sold" : "Not evaluated";
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " | Warranty: %d months | Capacity: %.1f KW".formatted(warrantyMonths, capacityKW);
+    }
+
     private void setWarrantyMonths(int warrantyMonths) {
         if(warrantyMonths < 0) {
             throw new IllegalArgumentException("Warranty months must be >= 0");

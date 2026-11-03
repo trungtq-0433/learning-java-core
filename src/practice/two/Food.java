@@ -28,6 +28,11 @@ public class Food extends Goods {
         return "Not evaluated";
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " | Mfg date: %s | Exp date: %s | Supplier: %s".formatted(mfgDate, expDate, supplier);
+    }
+
     private void setExpDate(LocalDate expDate, LocalDate mfgDate) {
         if (expDate.isBefore(mfgDate)) {
             throw new IllegalArgumentException("ExpDate must be >= " + mfgDate);

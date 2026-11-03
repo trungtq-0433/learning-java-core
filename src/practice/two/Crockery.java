@@ -26,4 +26,9 @@ public class Crockery extends Goods {
         }
         return "Not evaluated";
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | Manufacturer: %s | Date received: %s".formatted(manufacturer, dateReceived);
+    }
 }
