@@ -1,12 +1,10 @@
 package practice.three;
 
-import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class VehicleManager {
     private final List<Vehicle> vehicles = new ArrayList<Vehicle>();
-    private final List<String> validManufacturers = List.of("Honda", "Yamaha", "Toyota", "Suzuki");
 
     public boolean addVehicle(Vehicle v) {
         boolean exists = vehicles.stream().anyMatch(item -> item.getPlateNumber().equalsIgnoreCase(v.getPlateNumber()));
@@ -17,18 +15,7 @@ public class VehicleManager {
         }
 
         if (!isOwnerValid(v.getOwner())){
-            IO.println("Error: " + v.getOwner() + " already exists");
-            return false;
-        }
-
-        if (!validManufacturers.contains(v.getManufacturer())) {
-            IO.println("Error: " + v.getManufacturer() + " must be one of the following values: " + String.join(", ", validManufacturers));
-            return false;
-        }
-
-        int currentYear = Year.now().getValue();
-        if (v.getManufactureYear() <= 2000 || v.getManufactureYear() > currentYear) {
-            IO.println("Error: " + v.getManufactureYear() + " must be > 2000 and <= " + currentYear);
+            IO.println("Error: ID card is already registered to an owner with a different name or email");
             return false;
         }
 
@@ -47,9 +34,14 @@ public class VehicleManager {
                 .toList();
     }
 
-    public void deleteByManufacturer(String manufacturer) {
-        vehicles.removeIf(v -> v.getManufacturer().equalsIgnoreCase(manufacturer));
-        IO.println("Successfully deleted all vehicles from brand: " + manufacturer);
+    public boolean deleteByManufacturer(String manufacturer) {
+        boolean removed = vehicles.removeIf(v -> v.getManufacturer().equalsIgnoreCase(manufacturer));
+        if (removed) {
+            IO.println("Successfully deleted all vehicles from brand: " + manufacturer);
+        } else {
+            IO.println("No vehicles found for brand: " + manufacturer);
+        }
+        return removed;
     }
 
     public String getTopManufacturer() {
@@ -66,13 +58,13 @@ public class VehicleManager {
                 .collect(Collectors.groupingBy(Vehicle::getManufacturer, Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                .forEach(e -> IO.println("Manufacturer: %s | Count: %d%n".formatted(e.getKey(), e.getValue())));
+                .forEach(e -> IO.println("Manufacturer: %s | Count: %d".formatted(e.getKey(), e.getValue())));
     }
 
     public void displayVehicleTypeStatistics() {
         vehicles.stream()
                 .collect(Collectors.groupingBy(Object::getClass, Collectors.counting()))
-                .forEach((k, v) -> IO.println("Vehicle type: %s | Count: %d%n".formatted(k.getSimpleName(), v)));
+                .forEach((k, v) -> IO.println("Vehicle type: %s | Count: %d".formatted(k.getSimpleName(), v)));
     }
 
     private boolean isOwnerValid(Owner newOwner) {
