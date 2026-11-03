@@ -12,13 +12,18 @@ public class Electrical extends Goods {
 
 
     @Override
-    public double calculateVAT() {
-        return unitPrice * 0.1;
+    protected double getVatRate() {
+        return 0.1;
     }
 
     @Override
     public String evaluateConsumption() {
         return (inventoryQuantity < 3) ? "Sold" : "Not evaluated";
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | Warranty: %d months | Capacity: %.1f KW".formatted(warrantyMonths, capacityKW);
     }
 
     private void setWarrantyMonths(int warrantyMonths) {

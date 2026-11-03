@@ -18,7 +18,7 @@ public class Rectangle extends Shape {
     @Override
     public void displayInfo() {
         super.displayInfo();
-        IO.println("Rectangle with width: " + width + "and height: " + height);
+        IO.println("Rectangle with width: " + width + " and height: " + height);
         IO.println("Perimeter is: " + getPerimeter());
         IO.println("Area is: " + getArea());
     }

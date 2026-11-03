@@ -1,10 +1,12 @@
 package practice.three;
 
+import java.time.Clock;
+
 public class Truck extends Vehicle {
     private double tonnage;
 
-    public Truck(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, double tonnage) {
-        super(plateNumber, manufacturer, manufactureYear, color, owner);
+    public Truck(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, double tonnage, Clock clock) {
+        super(plateNumber, manufacturer, manufactureYear, color, owner, clock);
         this.tonnage = tonnage;
     }
 
