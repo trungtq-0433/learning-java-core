@@ -17,7 +17,11 @@ public abstract class Goods {
         return code;
     }
 
-    public abstract double calculateVAT();
+    public double calculateVAT() {
+        return unitPrice * getVatRate();
+    }
+
+    protected abstract double getVatRate();
 
     public abstract String evaluateConsumption();
 

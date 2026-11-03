@@ -12,8 +12,8 @@ public class Electrical extends Goods {
 
 
     @Override
-    public double calculateVAT() {
-        return unitPrice * 0.1;
+    protected double getVatRate() {
+        return 0.1;
     }
 
     @Override

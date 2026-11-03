@@ -15,8 +15,8 @@ public class Food extends Goods {
     }
 
     @Override
-    public double calculateVAT() {
-        return unitPrice * 0.05;
+    protected double getVatRate() {
+        return 0.05;
     }
 
     @Override
