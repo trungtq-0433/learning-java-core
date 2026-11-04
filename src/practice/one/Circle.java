@@ -1,25 +1,24 @@
 package practice.one;
 
-public class Circle extends Shape {
-    public Circle(double diameter) {
-        super(diameter, diameter);
+public final class Circle extends Shape {
+    private final double radius;
+
+    public Circle(double radius) {
+        this.radius = requirePositive(radius, "Radius");
     }
 
     @Override
     public double getArea() {
-        double radius = width / 2;
-        return Math.PI * Math.pow(radius, 2);
-    }
-
-    public double getCircumference() {
-        return Math.PI * width;
+        return Math.PI * radius * radius;
     }
 
     @Override
-    public void displayInfo() {
-        super.displayInfo();
-        IO.println("Circle with diameter: " + width);
-        IO.println("Circumference is: " + getCircumference());
-        IO.println("Area is: " + getArea());
+    public double getPerimeter() {
+        return 2 * Math.PI * radius;
+    }
+
+    @Override
+    protected String describe() {
+        return "Circle with radius: %.2f".formatted(radius);
     }
 }

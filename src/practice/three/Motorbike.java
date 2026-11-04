@@ -2,12 +2,12 @@ package practice.three;
 
 import java.time.Clock;
 
-public class Motorbike extends Vehicle {
-    private double capacity;
+public final class Motorbike extends Vehicle {
+    private final double capacity;
 
-    public Motorbike(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, double capacity, Clock clock) {
+    public Motorbike(String plateNumber, Manufacturer manufacturer, int manufactureYear, String color, Owner owner, double capacity, Clock clock) {
         super(plateNumber, manufacturer, manufactureYear, color, owner, clock);
-        this.capacity = capacity;
+        this.capacity = requirePositive(capacity, "Capacity");
     }
 
     @Override

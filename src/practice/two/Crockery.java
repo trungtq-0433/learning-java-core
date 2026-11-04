@@ -1,34 +1,33 @@
 package practice.two;
 
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
-public class Crockery extends Goods {
-    private String manufacturer;
-    private LocalDate dateReceived;
+public final class Crockery extends Goods {
+    private static final BigDecimal VAT_RATE = new BigDecimal("0.1");
+
+    private final String manufacturer;
+    private final LocalDate dateReceived;
     private final Clock clock;
 
-    public Crockery(String code, String name, int inventoryQuantity, double unitPrice, String manufacturer, LocalDate dateReceived, Clock clock) {
+    public Crockery(String code, String name, int inventoryQuantity, BigDecimal unitPrice, String manufacturer, LocalDate dateReceived, Clock clock) {
         super(code, name, inventoryQuantity, unitPrice);
-        this.manufacturer = manufacturer;
-        this.dateReceived = dateReceived;
-        this.clock = Objects.requireNonNull(clock);
+        this.manufacturer = requireNotBlank(manufacturer, "Manufacturer");
+        this.dateReceived = requireNonNull(dateReceived, "Date received");
+        this.clock = requireNonNull(clock, "Clock");
     }
 
     @Override
-    protected double getVatRate() {
-        return 0.1;
+    protected BigDecimal getVatRate() {
+        return VAT_RATE;
     }
 
     @Override
-    public String evaluateConsumption() {
+    public ConsumptionStatus evaluateConsumption() {
         long storageDays = dateReceived.until(LocalDate.now(clock), ChronoUnit.DAYS);
-        if (inventoryQuantity > 50 && storageDays > 10) {
-            return "Slow sales";
-        }
-        return "Not evaluated";
+        return getInventoryQuantity() > 50 && storageDays > 10 ? ConsumptionStatus.SLOW_SALES : ConsumptionStatus.NOT_EVALUATED;
     }
 
     @Override

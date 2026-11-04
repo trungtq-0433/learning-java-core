@@ -1,24 +1,21 @@
 package practice.one;
 
-public abstract class Shape {
-    protected double width;
-    protected double height;
-
-    public Shape(double width, double height) {
-        if (!isPositive(width) || !isPositive(height)) {
-            throw new IllegalArgumentException("Dimensions must be positive numbers");
-        }
-        this.width = width;
-        this.height = height;
-    }
-
+public abstract sealed class Shape permits Circle, Rectangle {
     public abstract double getArea();
 
-    public void displayInfo() {
-        IO.println("----------------------------------------------------------");
+    public abstract double getPerimeter();
+
+    protected abstract String describe();
+
+    @Override
+    public String toString() {
+        return "%s | Perimeter: %.2f | Area: %.2f".formatted(describe(), getPerimeter(), getArea());
     }
 
-    private static boolean isPositive(double value) {
-        return Double.isFinite(value) && value > 0;
+    protected static double requirePositive(double value, String field) {
+        if (!Double.isFinite(value) || value <= 0) {
+            throw new IllegalArgumentException(field + " must be a positive number");
+        }
+        return value;
     }
 }

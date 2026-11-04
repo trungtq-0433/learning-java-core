@@ -1,44 +1,31 @@
 package practice.two;
 
-public class Electrical extends Goods {
-    private int warrantyMonths;
-    private double capacityKW;
+import java.math.BigDecimal;
 
-    public Electrical(String code, String name, int inventoryQuantity, double unitPrice, int warrantyMonths, double capacityKW) {
+public final class Electrical extends Goods {
+    private static final BigDecimal VAT_RATE = new BigDecimal("0.1");
+
+    private final int warrantyMonths;
+    private final double capacityKW;
+
+    public Electrical(String code, String name, int inventoryQuantity, BigDecimal unitPrice, int warrantyMonths, double capacityKW) {
         super(code, name, inventoryQuantity, unitPrice);
-        setWarrantyMonths(warrantyMonths);
-        setCapacityKW(capacityKW);
-    }
-
-
-    @Override
-    protected double getVatRate() {
-        return 0.1;
+        this.warrantyMonths = requireNonNegative(warrantyMonths, "Warranty months");
+        this.capacityKW = requireNonNegative(capacityKW, "Capacity KW");
     }
 
     @Override
-    public String evaluateConsumption() {
-        return (inventoryQuantity < 3) ? "Sold" : "Not evaluated";
+    protected BigDecimal getVatRate() {
+        return VAT_RATE;
+    }
+
+    @Override
+    public ConsumptionStatus evaluateConsumption() {
+        return getInventoryQuantity() < 3 ? ConsumptionStatus.SOLD : ConsumptionStatus.NOT_EVALUATED;
     }
 
     @Override
     public String toString() {
         return super.toString() + " | Warranty: %d months | Capacity: %.1f KW".formatted(warrantyMonths, capacityKW);
-    }
-
-    private void setWarrantyMonths(int warrantyMonths) {
-        if(warrantyMonths < 0) {
-            throw new IllegalArgumentException("Warranty months must be >= 0");
-        }
-
-        this.warrantyMonths = warrantyMonths;
-    }
-
-    private void setCapacityKW(double capacityKW) {
-        if(capacityKW < 0) {
-            throw new IllegalArgumentException("Capacity KW must be >= 0");
-        }
-
-        this.capacityKW = capacityKW;
     }
 }

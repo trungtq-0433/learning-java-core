@@ -1,53 +1,75 @@
 package practice.two;
 
-public abstract class Goods {
-    protected String code;
-    protected String name;
-    protected int inventoryQuantity;
-    protected double unitPrice;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-    public Goods(String code, String name, int inventoryQuantity, double unitPrice) {
+public abstract sealed class Goods permits Food, Electrical, Crockery {
+    private final String code;
+    private final String name;
+    private final int inventoryQuantity;
+    private final BigDecimal unitPrice;
+
+    protected Goods(String code, String name, int inventoryQuantity, BigDecimal unitPrice) {
         this.code = requireNotBlank(code, "Code");
         this.name = requireNotBlank(name, "Name");
-        setInventoryQuantity(inventoryQuantity);
-        setUnitPrice(unitPrice);
+        this.inventoryQuantity = requireNonNegative(inventoryQuantity, "Inventory quantity");
+        this.unitPrice = requireNonNegative(unitPrice, "Unit price");
     }
 
     public String getCode() {
         return code;
     }
 
-    public double calculateVAT() {
-        return unitPrice * getVatRate();
+    protected int getInventoryQuantity() {
+        return inventoryQuantity;
     }
 
-    protected abstract double getVatRate();
-
-    public abstract String evaluateConsumption();
-
-    private void setInventoryQuantity(int inventoryQuantity) {
-        if(inventoryQuantity < 0) {
-            throw new IllegalArgumentException("Inventory quantity must be >= 0");
-        }
-        this.inventoryQuantity = inventoryQuantity;
+    public final BigDecimal calculateVAT() {
+        return unitPrice.multiply(getVatRate()).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void setUnitPrice(double unitPrice) {
-        if (!Double.isFinite(unitPrice) || unitPrice < 0) {
-            throw new IllegalArgumentException("Unit price must be >= 0");
-        }
-        this.unitPrice = unitPrice;
+    protected abstract BigDecimal getVatRate();
+
+    public abstract ConsumptionStatus evaluateConsumption();
+
+    @Override
+    public String toString() {
+        return "Code: %s | Name: %s | Inventory Quantity: %d | Unit Price: %.2f | VAT: %.2f | Evaluate: %s".formatted(
+                code, name, inventoryQuantity, unitPrice, calculateVAT(), evaluateConsumption());
     }
 
-    private static String requireNotBlank(String value, String field) {
+    protected static String requireNotBlank(String value, String field) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(field + " must not be blank");
         }
         return value;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Code: %s | Name: %s | Inventory Quantity: %d | Unit Price: %.2f | VAT: %.2f | Evaluate: %s", code, name, inventoryQuantity, unitPrice, calculateVAT(), evaluateConsumption());
+    protected static <T> T requireNonNull(T value, String field) {
+        if (value == null) {
+            throw new IllegalArgumentException(field + " is required");
+        }
+        return value;
+    }
+
+    protected static int requireNonNegative(int value, String field) {
+        if (value < 0) {
+            throw new IllegalArgumentException(field + " must be >= 0");
+        }
+        return value;
+    }
+
+    protected static double requireNonNegative(double value, String field) {
+        if (!Double.isFinite(value) || value < 0) {
+            throw new IllegalArgumentException(field + " must be >= 0");
+        }
+        return value;
+    }
+
+    private static BigDecimal requireNonNegative(BigDecimal value, String field) {
+        if (requireNonNull(value, field).signum() < 0) {
+            throw new IllegalArgumentException(field + " must be >= 0");
+        }
+        return value;
     }
 }
