@@ -1,12 +1,15 @@
 package practice.two;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public abstract sealed class Goods permits Food, Electrical, Crockery {
     private final String code;
     private final String name;
     private final int inventoryQuantity;
-    private final double unitPrice;
+    private final BigDecimal unitPrice;
 
-    protected Goods(String code, String name, int inventoryQuantity, double unitPrice) {
+    protected Goods(String code, String name, int inventoryQuantity, BigDecimal unitPrice) {
         this.code = requireNotBlank(code, "Code");
         this.name = requireNotBlank(name, "Name");
         this.inventoryQuantity = requireNonNegative(inventoryQuantity, "Inventory quantity");
@@ -21,13 +24,13 @@ public abstract sealed class Goods permits Food, Electrical, Crockery {
         return inventoryQuantity;
     }
 
-    public final double calculateVAT() {
-        return unitPrice * getVatRate();
+    public final BigDecimal calculateVAT() {
+        return unitPrice.multiply(getVatRate()).setScale(2, RoundingMode.HALF_UP);
     }
 
-    protected abstract double getVatRate();
+    protected abstract BigDecimal getVatRate();
 
-    public abstract String evaluateConsumption();
+    public abstract ConsumptionStatus evaluateConsumption();
 
     @Override
     public String toString() {
@@ -58,6 +61,13 @@ public abstract sealed class Goods permits Food, Electrical, Crockery {
 
     protected static double requireNonNegative(double value, String field) {
         if (!Double.isFinite(value) || value < 0) {
+            throw new IllegalArgumentException(field + " must be >= 0");
+        }
+        return value;
+    }
+
+    private static BigDecimal requireNonNegative(BigDecimal value, String field) {
+        if (requireNonNull(value, field).signum() < 0) {
             throw new IllegalArgumentException(field + " must be >= 0");
         }
         return value;

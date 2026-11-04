@@ -4,7 +4,7 @@ import practice.two.Food;
 import practice.two.Goods;
 import practice.two.GoodsManager;
 
-record BaseInfo(String code, String name, int inventoryQuantity, double unitPrice) {}
+record BaseInfo(String code, String name, int inventoryQuantity, BigDecimal unitPrice) {}
 
 final Scanner sc = new Scanner(System.in);
 final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
@@ -54,7 +54,7 @@ BaseInfo readBaseInfo() {
     if (goodsManager.exists(code)) {
         throw new IllegalArgumentException("Code " + code + " already exists");
     }
-    return new BaseInfo(code, input("Name"), inputInt("Inventory Quantity"), inputDouble("Unit Price"));
+    return new BaseInfo(code, input("Name"), inputInt("Inventory Quantity"), inputMoney("Unit Price"));
 }
 
 void add(Goods goods) {
@@ -82,6 +82,10 @@ int inputInt(String label) {
 
 double inputDouble(String label) {
     return parse(label, Double::parseDouble, "a number");
+}
+
+BigDecimal inputMoney(String label) {
+    return parse(label, BigDecimal::new, "a number");
 }
 
 LocalDate inputDate(String label) {

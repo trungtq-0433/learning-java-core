@@ -1,23 +1,27 @@
 package practice.two;
 
+import java.math.BigDecimal;
+
 public final class Electrical extends Goods {
+    private static final BigDecimal VAT_RATE = new BigDecimal("0.1");
+
     private final int warrantyMonths;
     private final double capacityKW;
 
-    public Electrical(String code, String name, int inventoryQuantity, double unitPrice, int warrantyMonths, double capacityKW) {
+    public Electrical(String code, String name, int inventoryQuantity, BigDecimal unitPrice, int warrantyMonths, double capacityKW) {
         super(code, name, inventoryQuantity, unitPrice);
         this.warrantyMonths = requireNonNegative(warrantyMonths, "Warranty months");
         this.capacityKW = requireNonNegative(capacityKW, "Capacity KW");
     }
 
     @Override
-    protected double getVatRate() {
-        return 0.1;
+    protected BigDecimal getVatRate() {
+        return VAT_RATE;
     }
 
     @Override
-    public String evaluateConsumption() {
-        return getInventoryQuantity() < 3 ? "Sold" : "Not evaluated";
+    public ConsumptionStatus evaluateConsumption() {
+        return getInventoryQuantity() < 3 ? ConsumptionStatus.SOLD : ConsumptionStatus.NOT_EVALUATED;
     }
 
     @Override
