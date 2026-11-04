@@ -2,30 +2,24 @@ package practice.three;
 
 import java.time.Clock;
 import java.time.Year;
-import java.util.List;
 
 public abstract sealed class Vehicle permits Car, Truck, Motorbike {
-    private static final List<String> VALID_MANUFACTURERS = List.of("Honda", "Yamaha", "Toyota", "Suzuki");
-
     private final String plateNumber;
-    private final String manufacturer;
+    private final Manufacturer manufacturer;
     private final int manufactureYear;
     private final String color;
     private final Owner owner;
 
-    protected Vehicle(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, Clock clock) {
+    protected Vehicle(String plateNumber, Manufacturer manufacturer, int manufactureYear, String color, Owner owner, Clock clock) {
         this.plateNumber = requireValidPlateNumber(plateNumber);
-        this.manufacturer = toKnownManufacturer(manufacturer);
+        this.manufacturer = requireNonNull(manufacturer, "Manufacturer");
         this.manufactureYear = requireValidYear(manufactureYear, clock);
         this.color = requireNotBlank(color, "Color");
-        if (owner == null) {
-            throw new IllegalArgumentException("Owner is required");
-        }
-        this.owner = owner;
+        this.owner = requireNonNull(owner, "Owner");
     }
 
     public String getPlateNumber() { return plateNumber; }
-    public String getManufacturer() { return manufacturer; }
+    public Manufacturer getManufacturer() { return manufacturer; }
     public int getManufactureYear() { return manufactureYear; }
     public Owner getOwner() { return owner; }
 
@@ -38,6 +32,13 @@ public abstract sealed class Vehicle permits Car, Truck, Motorbike {
     protected static String requireNotBlank(String value, String field) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(field + " must not be blank");
+        }
+        return value;
+    }
+
+    private static <T> T requireNonNull(T value, String field) {
+        if (value == null) {
+            throw new IllegalArgumentException(field + " is required");
         }
         return value;
     }
@@ -61,14 +62,6 @@ public abstract sealed class Vehicle permits Car, Truck, Motorbike {
             throw new IllegalArgumentException("Plate number must be 5 characters");
         }
         return plateNumber;
-    }
-
-    private static String toKnownManufacturer(String manufacturer) {
-        return VALID_MANUFACTURERS.stream()
-                .filter(m -> m.equalsIgnoreCase(manufacturer))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        manufacturer + " must be one of the following values: " + String.join(", ", VALID_MANUFACTURERS)));
     }
 
     private static int requireValidYear(int manufactureYear, Clock clock) {

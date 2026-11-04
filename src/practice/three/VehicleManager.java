@@ -9,7 +9,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class VehicleManager {
-    public record ManufacturerCount(String manufacturer, long count) {}
+    public record ManufacturerCount(Manufacturer manufacturer, long count) {
+    }
 
     private final List<Vehicle> vehicles = new ArrayList<>();
 
@@ -18,7 +19,8 @@ public class VehicleManager {
             throw new IllegalArgumentException("Plate number " + vehicle.getPlateNumber() + " already exists");
         }
         if (hasConflictingOwner(vehicle.getOwner())) {
-            throw new IllegalArgumentException("ID card is already registered to an owner with a different name or email");
+            throw new IllegalArgumentException(
+                    "ID card is already registered to an owner with a different name or email");
         }
         vehicles.add(vehicle);
     }
@@ -35,9 +37,9 @@ public class VehicleManager {
                 .toList();
     }
 
-    public int deleteByManufacturer(String manufacturer) {
+    public int deleteByManufacturer(Manufacturer manufacturer) {
         int sizeBefore = vehicles.size();
-        vehicles.removeIf(v -> v.getManufacturer().equalsIgnoreCase(manufacturer));
+        vehicles.removeIf(v -> v.getManufacturer() == manufacturer);
         return sizeBefore - vehicles.size();
     }
 
@@ -51,7 +53,7 @@ public class VehicleManager {
                 .toList();
     }
 
-    public Optional<String> getTopManufacturer() {
+    public Optional<Manufacturer> getTopManufacturer() {
         return getManufacturerRanking().stream().findFirst().map(ManufacturerCount::manufacturer);
     }
 

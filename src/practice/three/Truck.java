@@ -5,7 +5,7 @@ import java.time.Clock;
 public final class Truck extends Vehicle {
     private final double tonnage;
 
-    public Truck(String plateNumber, String manufacturer, int manufactureYear, String color, Owner owner, double tonnage, Clock clock) {
+    public Truck(String plateNumber, Manufacturer manufacturer, int manufactureYear, String color, Owner owner, double tonnage, Clock clock) {
         super(plateNumber, manufacturer, manufactureYear, color, owner, clock);
         this.tonnage = requirePositive(tonnage, "Tonnage");
     }
